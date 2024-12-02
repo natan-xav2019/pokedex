@@ -5,6 +5,31 @@ let offset = 0
 
 const maxRecords = 151
 
+const OpenModal = (id) => {
+    const url = `https://pokeapi.co/api/v2/pokemon/${id}`
+    fetch(url)
+        .then(response => response.json())
+        .then(pokemon => {
+            detail = new PokemonModal
+            const types = pokemon.types.map((typeSlot) => typeSlot.type.name)
+            const [mainType] = types
+
+            const abilities = pokemon.abilities.map((abilit) => abilit.ability.name)
+            const stats = pokemon.stats.map((stats) => [stats.stat.name, stats.base_stat])
+
+            detail.number = pokemon.id
+            detail.name = pokemon.name
+            detail.types = types
+            detail.mainType = mainType
+            detail.photo = pokemon.sprites.other.dream_world.front_default
+            detail.abilities = abilities
+            detail.stats = stats
+
+            return detail
+        })
+        .then(console.log)
+}
+
 function loadPokemoItens(offset, limit) {
     pokeApi.getPokemons(offset, limit).then(pokemons => {
         const newHtml = pokemons.map(pokemon => `
@@ -17,7 +42,8 @@ function loadPokemoItens(offset, limit) {
                     </ol>
     
                     <img src="${pokemon.photo}"
-                        alt="${pokemon.name}">
+                        alt="${pokemon.name}"
+                        onclick="OpenModal(${pokemon.number})">
                 </div>
             </li>
         `).join("")
@@ -27,7 +53,7 @@ function loadPokemoItens(offset, limit) {
 
 loadPokemoItens(offset, limit)
 
-loadMoreButton.addEventListener('click',() => {
+loadMoreButton.addEventListener('click', () => {
     offset += limit
 
     const qtdRecordsNextPage = offset + limit
@@ -35,7 +61,7 @@ loadMoreButton.addEventListener('click',() => {
     if (qtdRecordsNextPage >= maxRecords) {
         const newLimit = maxRecords - offset
         loadPokemoItens(offset, newLimit)
-        
+
         loadMoreButton.parentElement.removeChild(loadMoreButton)
     } else {
         loadPokemoItens(offset, limit)

@@ -159,13 +159,19 @@
 }
 
 .pagination button {
-    padding: 0.25rem 0.5rem;
+    padding: 0.30rem 0.55rem;
     margin: 0.25rem 0;
-    font-size: .625rem;
+    font-size: .725rem;
     color: #fff;
     background-color: #6c79db;
     border: none;
     border-radius: 1rem;
+    cursor: pointer;
+    transition: 0.2s filter;
+}
+
+.pagination button:hover {
+    filter: brightness(1.2);
 }
 
 @media only screen and (min-width: 380px) {

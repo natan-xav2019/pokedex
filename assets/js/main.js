@@ -1,9 +1,18 @@
 const pokemonList = document.getElementById("pokemonList")
 const loadMoreButton = document.getElementById("loadMoreButton")
+const modal = document.getElementById('modal')
+const fade = document.getElementById('fade')
 const limit = 5
 let offset = 0
 
 const maxRecords = 151
+
+const closeModal = () => {
+    modal.style.display = 'none'
+    fade.style.display = 'none'
+}
+
+fade.addEventListener("click",closeModal)
 
 const OpenModal = (id) => {
     const url = `https://pokeapi.co/api/v2/pokemon/${id}`
@@ -27,7 +36,45 @@ const OpenModal = (id) => {
 
             return detail
         })
-        .then(console.log)
+        .then(pokemon => {
+            const newHtml = `
+                <div class="header">
+                <h1 class="name">${pokemon.name}</h1>
+                <span class="number">#${pokemon.number}</span>
+            </div>
+            <div class="perfil">
+                <img src="${pokemon.photo}"
+                    alt="${pokemon.name}">
+            </div>
+            <div class="stats">
+                <h2>stats</h2>
+                <ul>
+                    ${pokemon.stats.map((stat) => `<li>${stat[0]} - ${stat[1]}</li>`).join("")}
+                </ul>
+            </div>
+            <div class="abilities-types">
+                <div>
+                    <h2>abilities</h2>
+                    <ul>
+                        ${pokemon.abilities.map((abilit) => `<li>${abilit}</li>`).join("")}
+                    </ul>
+                </div>
+                <div>
+                    <h2>types</h2>
+                    <ul>
+                        ${pokemon.types.map((type) => `<li">${type}</li>`).join("")}
+                    </ul>
+                </div>
+            </div>
+            <div>
+                <button onclick="closeModal()">Fechar</button>
+            </div>
+            `
+            modal.innerHTML = newHtml
+            modal.style.display = 'flex'
+            modal.className = pokemon.mainType
+            fade.style.display = 'block'
+        })
 }
 
 function loadPokemoItens(offset, limit) {
